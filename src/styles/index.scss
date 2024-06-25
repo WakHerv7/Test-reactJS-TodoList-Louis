@@ -1,0 +1,30 @@
+//write a scss file to reset the default styles
+//write a scss file to define the global styles
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-weight: 100;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #89CFF0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+button {
+  cursor: pointer;
+}
+

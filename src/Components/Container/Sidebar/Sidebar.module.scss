@@ -1,0 +1,80 @@
+.sidebar_container {
+  width: 20%;
+  height: 100%;
+  background-color: #fff;
+  padding-right: 10px;
+  padding-top: 20px;
+  border-radius: 10px;
+}
+
+.navlist {
+  margin-top: 10px;
+  margin-bottom: 100px;
+  list-style-type: none;
+  width: 100%;
+  & li {
+    padding: 5px 20px;
+    font-size: 24px;
+    color: #57a0d3;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 5px;
+    &:hover {
+      background-color: #ADD8E6;
+      transition: all 0.1s ease-in-out;
+    }
+    &:hover span {
+      font-weight: bold;
+      transition: all 0.1s ease-in-out;
+    }
+    & span {
+      font-size: 16px;
+      color: #57a0d3;
+      transition: all 0.1s ease-in-out;
+    }
+  }
+}
+
+.labels_section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  gap: 20px;
+  padding-left: 20px;
+  & p {
+    font-size: 16px;
+    color: #000;
+    font-weight: bold;
+  }
+  & ul {
+    list-style-type: none;
+    width: 100%;
+    & li {
+      padding: 5px 0;
+      font-size: 16px;
+      color: #57a0d3;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 5px;
+      & span {
+        font-size: 12px;
+        color: #000;
+      }
+      & .icon_1 {
+        color: red;
+      }
+      & .icon_2 {
+        color: green;
+      }
+      & .icon_3 {
+        color: blue;
+      }
+      & .icon_4 {
+        color: black;
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0D52BD;
+  font-weight: 400;
+  border: 1px solid #ADD8E6;
+  border-radius: 5px;
+  width: 80%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px 20px;
+  border-radius: 50px;
+  margin-left: 20px;
+  background-color: #fff;
+  &:hover {
+    background-color: #ADD8E6
+  }
+  .icon {
+    font-size: 1.5rem;
+    margin-right: 5px;
+  }
+  .text {
+    font-size: .85rem;
+  }
+}
