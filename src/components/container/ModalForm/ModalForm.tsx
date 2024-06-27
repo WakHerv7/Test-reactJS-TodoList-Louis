@@ -1,30 +1,43 @@
 import AutoComplete from '../../shared/CustomAutoComplete/AutoComplete';
 import CustomDropdown from '../../shared/CustomAutoComplete/CustomDropdown/CustomDropdown';
 import styles from './ModalForm.module.scss';
-import { useContext } from 'react';
-import GlobalContext, {Tasks} from '../../../context/GlobalContext';
-import { Person } from '../../../utils';
+import { useContext, useState } from 'react';
+// import GlobalContext, {Tasks} from '../../../context/GlobalContext';
+import { Labels, Person, Priority, ToDo } from '../../../models';
 import dayjs from 'dayjs';
 
 
 export default function ModalForm() {
-  const {
-    setShowModal,
-    value,
-    inputValue,
-    setPerson,
-    title,
-    setTitle,
-    description,
-    setDescription,
-    labels,
-    priority,
-    dueDate,
-    savedTasks,
-    setSavedTasks,
-    dispatchTodoEvents,
-  } = useContext(GlobalContext);
-  let person;
+  // const {
+  //   setShowModal,
+  //   value,
+  //   inputValue,
+  //   setPerson,
+  //   title,
+  //   setTitle,
+  //   description,
+  //   setDescription,
+  //   labels,
+  //   priority,
+  //   dueDate,
+  //   savedTasks,
+  //   setSavedTasks,
+  //   dispatchTodoEvents,
+  // } = useContext(GlobalContext);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showPersonModal, setShowPersonModal] = useState<boolean>(false);
+  const [person, setPerson] = useState<Person[]>([]);
+  const [value, setValue] = useState<Person | null>(null);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const startDate = Date.now();
+  const [dueDate, setDueDate] = useState<any>(dayjs(startDate));
+  const [labels, setLabels] = useState<Labels[]>([]);
+  const [priority, setPriority] = useState<Priority>(Priority.LOW);
+  const [ savedTasks, setSavedTasks ] = useState<ToDo[]>([]);
+
+  // let person;
 
   const personList: Person[] = [
     {id: 1, name: 'John Doe', email: 'abc@123.com', phone: '123456789' },
@@ -38,7 +51,7 @@ export default function ModalForm() {
 
   const handleSubission = (e: any) => {
     e.preventDefault();
-    person = personList.filter((person) => person?.name === value || person.name === inputValue);
+    // person = personList.filter((person) => person?.name === value || person.name === inputValue);
     setPerson(person);
     
     const taskObject = {
@@ -52,9 +65,9 @@ export default function ModalForm() {
       description
     }
 
-    setSavedTasks([...savedTasks, taskObject]);
+    // setSavedTasks([...savedTasks, taskObject]);
 
-    dispatchTodoEvents({ type: 'push', payload: taskObject });
+    // dispatchTodoEvents({ type: 'push', payload: taskObject });
     console.log(savedTasks);
     setShowModal(false);
   }

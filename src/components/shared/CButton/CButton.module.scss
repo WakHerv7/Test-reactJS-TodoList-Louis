@@ -2,8 +2,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 7px;
   color: #0D52BD;
-  font-weight: 400;
+  font-weight: 600;
+  white-space: nowrap;
+  
   border: 1px solid #ADD8E6;
   border-radius: 5px;
   width: 80%;

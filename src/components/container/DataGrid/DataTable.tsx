@@ -1,11 +1,14 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Box from '@mui/material/Box';
 import styles from './DataTable.module.scss';
-import { Tasks } from "../../../context/GlobalContext";
+// import { Tasks } from "../../../context/GlobalContext";
+import { ToDo } from "../../../models";
 import dayjs from "dayjs";
+import { Avatar } from "@mui/material";
+import { stringAvatar } from "../../../utils";
 
 
-export default function DataTable({ data }: { data: Tasks[]}) {
+export default function DataTable({ data }: { data: ToDo[]}) {
   const columns: GridColDef<(typeof data)[number]>[] = [
     {
       field: 'title',
@@ -13,7 +16,8 @@ export default function DataTable({ data }: { data: Tasks[]}) {
       width: 600,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <span className={`material-icons-outlined ${styles.person_image}`}>group</span><span>{params.row.title}</span>
+          {params.row.title && <Avatar {...stringAvatar(params.row.title ?? '')} />}
+          <span>{params.row.title}</span>
         </Box>
       ),
     },
@@ -27,13 +31,12 @@ export default function DataTable({ data }: { data: Tasks[]}) {
       field: 'dueDate',
       width: 220,
       headerName: 'Due Date',
-      valueGetter: (value, data) => `Scheduled for ${dayjs(data.dueDate).format('D MMM YYYY')}`,
+      valueGetter: (value, data) => `Scheduled for ${dayjs(data.endDate).format('D MMM YYYY')}`,
     },
   ];
 
   return (
-    <>
-      <Box sx={{ height: '100%', width: '100%', backgroundColor: '#fff', borderRadius: '10px', padding: '10px 20px' }}>
+    <div className={`rounded-2xl shadow-lg h-full w-full bg-white p-5`}>
         {data.length !== 0 ? (
           <DataGrid
             rows={data}
@@ -50,10 +53,9 @@ export default function DataTable({ data }: { data: Tasks[]}) {
           />
         ) : (
           <div className={styles.no_tasks}>
-            <p>No tasks assigned yet. Click on <span>Add Tasks</span> to assign new tasks.</p>
+            <p>No user yet. Click on <span>Add Users</span> to assign new tasks.</p>
           </div>
         )}
-      </Box>
-    </>
+    </div>
   );
 }

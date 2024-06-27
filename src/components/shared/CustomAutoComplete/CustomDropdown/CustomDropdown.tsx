@@ -1,20 +1,16 @@
 import { useContext, useId, useState } from 'react'
-import { Priority, Labels } from '../../../../utils';
+import { Priority, Labels } from '../../../../models';
 import styles from './CustomDropdown.module.scss';
-import GlobalContext from '../../../../context/GlobalContext';
+// import GlobalContext from '../../../../context/GlobalContext';
 
-function CustomDropdown({type}: {type: string}) {
-  const {
-    labels,
-    setLabels,
-    priority,
-    setPriority
-  } = useContext(GlobalContext);
+function CustomDropdown({type}: {type: string}) {  
+  const [labels, setLabels] = useState<Labels[]>([]);
+  const [priority, setPriority] = useState<Priority>(Priority.LOW);
   const id = useId();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (type === 'priority') {;
-      setPriority(e.target.value)
+      // setPriority(e.target.value)
     } else {
     }
   }
@@ -27,8 +23,9 @@ function CustomDropdown({type}: {type: string}) {
         onChange={handleChange}
       />
       <datalist id={id}>
-        {Object.values(type === 'priority' ? Priority : Labels).map((value) => (
-          <option key={value} value={value} />
+        {Object.values(type === 'priority' ? Priority : Labels).map((value, idx) => (
+          // <option key={idx} value={value ?? '0'} />
+          <></>
         ))}
       </datalist>
     </div>

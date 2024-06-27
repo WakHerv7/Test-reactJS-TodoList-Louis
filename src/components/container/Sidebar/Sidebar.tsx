@@ -1,11 +1,11 @@
-import CustomButtons from '../../shared/CustomButtons/CustomButtons';
+import CButton from '../../shared/CButton/CButton';
 import styles from './Sidebar.module.scss';
 
 export default function Sidebar() {
   
   return (
-    <div className={styles.sidebar_container}>
-      <CustomButtons title="Add Task" icon={'add'} />
+    <div className={`rounded-2xl shadow-lg ${styles.sidebar_container}`}>
+      <CButton title="Add Task" icon={'add'} />
       <ul className={styles.navlist}>
         <li>
           <span className={`material-icons-outlined`}>
