@@ -32,11 +32,21 @@ export function stringAvatar(name: string) {
   };
 }
 
-// export function stringAvatar(name: string) {
-//   return {    
-//     sx: {
-//       bgcolor: stringToColor(name),
-//     },
-//     children: `${name.split(' ')?.[0]?.[0]}${name.split(' ')?.[1]?.[0]}`,
-//   };
-// }
+export const checkIfExists = (element:string, dataType:string) => {
+  let data = [];
+  const json = localStorage.getItem(dataType);
+  data = json ? JSON.parse(json) : [];
+
+  const searchValue = element.toLowerCase();
+  const filteredData = data.filter((row:any) =>
+    Object.values(row).some(value =>
+      // String(value).toLowerCase().includes(searchValue)
+      String(value).toLowerCase() === searchValue
+    )
+  );
+  if(filteredData.length >0) {
+    return true;
+  } else {
+    return false;
+  }
+};

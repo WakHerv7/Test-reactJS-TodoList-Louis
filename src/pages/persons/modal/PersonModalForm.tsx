@@ -1,58 +1,72 @@
-import AutoComplete from '../../../components/shared/CustomAutoComplete/AutoComplete';
-import CustomDropdown from '../../../components/shared/CustomAutoComplete/CustomDropdown/CustomDropdown';
-// import styles from './ModalForm.module.scss';
 import { useContext, useEffect, useState } from 'react';
-// import GlobalContext, {Tasks} from '../../../context/GlobalContext';
-import { Labels, Person, Priority, ToDo } from '../../../models';
-import dayjs from 'dayjs';
-import { DataContext } from '../../../context/DataContext';
-import { MdClose } from 'react-icons/md';
 import { faker } from '@faker-js/faker';
+import { MdClose } from 'react-icons/md';
+import { DataContext } from '../../../context/DataContext';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { TextField } from '@mui/material'; // Example using MUI TextField
+import { z } from 'zod';
+import { checkIfExists } from '../../../utils';
+
+const personSchema = z.object({
+  name: z.string().min(3, 'Insérez un nom d\'au moins 3 caractères').refine((value) => {
+    const exists = checkIfExists(value, 'persons');
+    return!exists;
+  }, { message: 'Ce nom existe déjà.' }),
+  email: z.string().email('Insérez un email valide').refine((value) => {
+    const exists = checkIfExists(value, 'persons');
+    return!exists;
+  }, { message: 'Cet email existe déjà.' }),
+  phone: z.string().min(9, 'Insérez un numéro d\'au moins 9 chiffre').refine((value) => {
+    const exists = checkIfExists(value, 'persons');
+    return!exists;
+  }, { message: 'Ce numéro de téléphone existe déjà.' }),
+});
+type FormData = z.infer<typeof personSchema >
 
 
 export default function PersonModalForm() {
   const { showPersonModal, updateStateShowPersonModal, addPerson, updatePerson, getOnePerson } = useContext(DataContext);
 
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-
+  const { 
+    register,
+    handleSubmit,
+    formState: { errors } 
+  } = useForm<FormData>({
+    resolver: zodResolver(personSchema),
+    defaultValues: {
+      name: showPersonModal.person?.name ?? '',      
+      email: showPersonModal.person?.email ?? '',
+      phone: showPersonModal.person?.phone ?? '',
+    },
+  });
 
   const handleClose = () => {
-    updateStateShowPersonModal({...showPersonModal, open:false, mode:''});
+    updateStateShowPersonModal({...showPersonModal, person:{}, open:false, mode:''});
   }
 
-  const submitPersonData = (e: any) => {
-    e.preventDefault();
-    if (showPersonModal.person?.id && showPersonModal.mode==='editForm') {
-      const id = showPersonModal.person?.id;
-      updatePerson(Number(id),{
-        id: id,
-        name: name,
-        email: email,
-        phone: phone,
-      });
-    } else {
-      if (name && email && phone) {
-        const newPerson = {
-          id: faker.number.int(),
-          name: name,
-          email: email,
-          phone: phone,
-        };
-        addPerson(newPerson);
+  const onSubmit = (data:FormData) => {
+      if (showPersonModal.person?.id && showPersonModal.mode==='editForm') {
+        const id = showPersonModal.person?.id;
+        updatePerson(Number(id),{
+          id: id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+        });
+      } else {
+        if (data.name && data.email && data.phone) {
+          const newPerson = {
+            id: faker.number.int(),
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+          };
+          addPerson(newPerson);
+        }
       }
-    }
-    handleClose();
+      handleClose();
   }
-
-  useEffect(() => {
-    if (showPersonModal.person?.id && showPersonModal.mode =='editForm') {
-      setName(showPersonModal.person?.name);
-      setEmail(showPersonModal.person?.email);
-      setPhone(showPersonModal.person?.phone);
-    }
-  }, [showPersonModal])
 
   return (
     <div className={``}>
@@ -63,7 +77,7 @@ export default function PersonModalForm() {
             onClick={handleClose}
             size={20}
             className='absolute top-4 right-4 cursor-pointer'/>
-            <form className="">
+            <form onSubmit={handleSubmit(onSubmit)} className="">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">Ajouter une nouvelle personne</h2>
                 <p className="mt-1 text-sm leading-6 text-gray-600">Veuillez remplir les informations ci-dessous.</p>
 
@@ -72,33 +86,33 @@ export default function PersonModalForm() {
                         <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">Nom complet</label>
                         <div className="mt-2">
                             <input 
+                            {...register("name")}
                             type="text" 
                             name="name" 
-                            id="name" 
+                            id="name"
                             placeholder="Nom complet"
                             className={`block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm 
                             ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
-                            focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6`}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6`}                            
                             />
+                            <small className={`text-xs text-red-600`}>{errors.name?.message}</small>
                         </div>
                     </div>
 
                     <div className="">
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">Email</label>
                         <div className="mt-2">
-                            <input 
+                            <input
+                            {...register("email")}
                             type="email" 
                             name="email" 
                             id="email" 
                             placeholder="abc@email.xyz"
                             className={`block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm 
                             ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
-                            focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6`}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6`}                            
                             />
+                            <small className={`text-xs text-red-600`}>{errors.email?.message}</small>
                         </div>
                     </div>
 
@@ -106,6 +120,7 @@ export default function PersonModalForm() {
                         <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">Telephone</label>
                         <div className="mt-2">
                             <input 
+                            {...register("phone")}
                             type="text" 
                             name="phone" 
                             id="phone" 
@@ -113,16 +128,14 @@ export default function PersonModalForm() {
                             className={`block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm 
                             ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
                             focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6`}
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
                             />
+                            <small className={`text-xs text-red-600`}>{errors.phone?.message}</small>
                         </div>
                     </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-4 mt-3 sm:flex sm:flex-row-reverse">
                     <button 
-                    type="submit" 
-                    onClick={submitPersonData}
+                    type="submit"
                     className={`inline-flex w-full justify-center rounded-md bg-sky-600 px-3 py-2 
                     text-sm font-semibold text-white shadow-sm hover:bg-sky-500 sm:ml-3 sm:w-auto`}>
                         Enregistrer
@@ -140,49 +153,6 @@ export default function PersonModalForm() {
         </div>
         
     </div>
-
-
-      {/* <header className={`styles.header`}>
-        <span>
-          Add New Task
-        </span>
-        <button className='material-icons-outlined' onClick={handleClose}>close</button>
-      </header>
-      <form className={`styles.form`}>
-        <div className={`styles.input_container`}>
-          <input
-            type="text"
-            placeholder='Task Name'
-            min={3}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div className={`styles.data_section`}>
-          <AutoComplete data={personList} />
-          <div className={`${`styles.input_container`} ${`styles.date_styles`}`}>
-            <input type="text" name="date" id="date" placeholder='Due Date' />
-            <span className="material-icons-outlined">calendar_today</span>
-          </div>
-          <CustomDropdown type="priority" />
-          <CustomDropdown type="labels" />
-        </div>
-        <div className={`styles.input_container`}>
-          <textarea
-            name="desc"
-            id="desc"
-            rows={5}
-            className={`styles.input_textarea`}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          >
-
-          </textarea>
-        </div>
-        <div className={`styles.button_container`}>
-          <button type="submit" className={`styles.action_buttons`} onClick={handleSubission}>Save</button>
-        </div>
-      </form> */}
     </div>
   )
 }
