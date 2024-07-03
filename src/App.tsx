@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import DataListPage from './pages/DataList';
 import DataFormPage from './pages/DataForm';
 import { DataProvider } from './context/DataContext';
-import TodoList from './pages/TodoList';
+import TodoList from './pages/todos';
 import PersonList from './pages/persons';
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
     <Router>
       <DataProvider>
         <Routes>
-          <Route path="/" element={<PersonList />} />          
+          <Route path="/" element={<TodoList />} />          
           <Route path="/todos" element={<TodoList />} />
           <Route path="/persons" element={<PersonList />} />
           <Route path="/data" element={<DataListPage />} />

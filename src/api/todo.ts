@@ -7,6 +7,7 @@ export const saveMockTodo = (data: any) => {
 export const getMockTodos = async () => {
   try {
     const response = await axios.get("/api/todo");
+    console.log("response.data getMockTodos : ", response.data);
     return response.data; 
   } catch (error: any) {
     return []; 
@@ -27,11 +28,14 @@ export const getOneMockTodo = async (data: any, id:number | string) => {
 
 export const addMockTodo = async (data: any, newItem: any) => {
   try {
+    // console.log("addMockTodo : ", newItem);
     const response = await axios.post("/api/todo", newItem);
+    console.log("response.data addMockTodo : ", response.data);
     const updatedData = [...data, response.data];
     saveMockTodo(updatedData);
     return updatedData;
   } catch (error: any) {
+    console.log("error addMockTodo : ", error);
     return null;
   }
 };

@@ -34,6 +34,7 @@ export function stringAvatar(name: string) {
 
 export const checkIfExists = (element:string, dataType:string) => {
   let data = [];
+  const isEditMode = localStorage.getItem(dataType+'Edit');
   const json = localStorage.getItem(dataType);
   data = json ? JSON.parse(json) : [];
 
@@ -44,9 +45,34 @@ export const checkIfExists = (element:string, dataType:string) => {
       String(value).toLowerCase() === searchValue
     )
   );
-  if(filteredData.length >0) {
+  if(!isEditMode &&filteredData.length >0) {
     return true;
   } else {
     return false;
   }
+};
+
+export function formatDate(dateInput: string | Date) {
+  if (typeof dateInput === 'string') {    
+    const dateObject = new Date(dateInput);
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    }).format(dateObject);
+  } else if (dateInput instanceof Date) {
+    // Input is already a Date object, format it directly
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    }).format(dateInput);
+  }
+}
+
+export const labelColors = {
+  html: 'red',
+  css: 'blue',
+  jquery: 'green',
+  nodejs: 'black',
 };

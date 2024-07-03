@@ -2,14 +2,14 @@ import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import {faker} from '@faker-js/faker';
-import { setupMockHandlers } from '../mockHandler/dataMockHandler';
-import { setupTodoMockHandlers } from '../mockHandler/todoMockHandler';
-import { setupPersonMockHandlers } from '../mockHandler/personMockHandler';
+// import { setupMockHandlers } from '../mockHandler/dataMockHandler';
+import { setupMockHandlers } from '../mockHandler/todoMockHandler';
+// import { setupPersonMockHandlers } from '../mockHandler/personMockHandler';
 import { getMockItems, getOneMockItem, addMockItem, updateMockItem, deleteMockItem, saveMockItem } from '../api/item'; 
 import { getMockTodos, getOneMockTodo, addMockTodo, updateMockTodo, deleteMockTodo, saveMockTodo } from '../api/todo'; 
 import { getMockPersons, getOneMockPerson, addMockPerson, updateMockPerson, deleteMockPerson, saveMockPerson } from '../api/person'; 
 import { useNavigate } from 'react-router-dom';
-import { Labels, Person, Priority, ToDo } from '../models';
+import { Labels, Person, Priority, Todo } from '../models';
 import dayjs from 'dayjs';
 
 
@@ -18,11 +18,18 @@ export type personModalProps = {
   person?: any,
   open: boolean
 }
+export type todoModalProps = {
+  mode: string,
+  todo?: any,
+  open: boolean
+}
 interface DataContextType {
   data: any[];
-  todos: ToDo[];
+  todos: Todo[];
   persons: Person[];
 
+  showTodoModal: todoModalProps;
+  updateStateShowTodoModal: (showTodoModal:todoModalProps) => void;
   showPersonModal: personModalProps;
   updateStateShowPersonModal: (showPersonModal:personModalProps) => void;
 
@@ -54,6 +61,8 @@ export const DataContext = createContext<DataContextType>({
   todos: [],
   persons: [],
 
+  showTodoModal: {mode:'', todo:{}, open:false},
+  updateStateShowTodoModal: (param?:todoModalProps) => null,
   showPersonModal: {mode:'', person:{}, open:false},
   updateStateShowPersonModal: (param?: personModalProps) => null,
 
@@ -95,15 +104,10 @@ export const DataProvider = ({ children }:{children:any}) => {
 
 
   // Todos ----------------------------------
-  const mockTodo = Array.from({ length: 5 }, () => ({
-    id: faker.number.int(),
-    name: faker.person.firstName(),
-    email: faker.internet.email(),
-  }));
   // localStorage.removeItem("todos");
   const storedTodos = localStorage.getItem('todos');
-  const stateTodos = storedTodos? JSON.parse(storedTodos) : mockTodo;
-  saveMockTodo(stateTodos);
+  const stateTodos = storedTodos? JSON.parse(storedTodos) : null;
+  stateTodos && saveMockTodo(stateTodos);
 
   // Persons ----------------------------------
   const mockPerson = Array.from({ length: 5 }, () => ({
@@ -119,27 +123,32 @@ export const DataProvider = ({ children }:{children:any}) => {
 
   // STATE --------------------------------------------------------------
   const [customData, setCustomData] = useState<any>(stateData);
-  const [todos, setTodos] = useState<any>(stateTodos);
+  const [todos, setTodos] = useState<any>(stateTodos ?? []);
   const [persons, setPersons] = useState<any>(statePersons);
 
   
   //--------------------------------------------------------------
   const [showPersonModal, setShowPersonModal] = useState<personModalProps>({mode:'', person:{}, open:false});
+  const [showTodoModal, setShowTodoModal] = useState<todoModalProps>({mode:'', todo:{}, open:false});
   //--------------------------------------------------------------
 
   const updateStateShowPersonModal = (param:personModalProps) => {
-    // console.log("updateStateShowPersonModal : ", param);
+    param?.open && param?.mode=='editForm' ? localStorage.setItem('personsEdit', 'true')  : localStorage.removeItem('personsEdit');
     setShowPersonModal(param);
+  }
+  const updateStateShowTodoModal = (param:todoModalProps) => {    
+    param?.open && param?.mode=='editForm' ? localStorage.setItem('todosEdit', 'true')  : localStorage.removeItem('todosEdit');
+    setShowTodoModal(param);
   }
 
   useEffect(() => {
-    const mock = setupMockHandlers({customData, stateData});
-    const mockTodos = setupTodoMockHandlers({todos, stateTodos});
-    const mockPersons = setupPersonMockHandlers({persons, statePersons});
+    // const mock = setupMockHandlers({customData, stateData});    
+    // const mockPersons = setupPersonMockHandlers({persons, statePersons});
+    const mock = setupMockHandlers({todos, stateTodos, persons, statePersons});
     return () => {
       mock.restore();      
-      mockTodos.restore();
-      mockPersons.restore();
+      // mockTodos.restore();
+      // mockPersons.restore();
     };
   }, []);
 
@@ -171,8 +180,16 @@ const getOneTodo = async (id:number | string) => {
 }
 const addTodo = async (newTodo:any) => {
   console.log("addTodo");
-  const resdata = await addMockTodo(todos, newTodo);
-  if (resdata) setTodos(resdata)
+  try {
+    const resdata = await addMockTodo(todos, newTodo);
+    console.log("Todo added : ", resdata);
+    if (resdata) setTodos(resdata)
+  } catch (error) {
+    console.log("addTodo ERROR : ", error);
+  }
+  // const resdata = await addMockTodo(todos, newTodo);
+  
+ 
 }
 const updateTodo = async (id:number | string, updatedTodo:any) => {
   console.log("updateTodo");
@@ -228,23 +245,29 @@ const deletePerson = async (id:number | string) => {
       data: customData,
       todos,
       persons,
+      showTodoModal,
+      updateStateShowTodoModal,
       showPersonModal,
       updateStateShowPersonModal,
+
       getItems,
       getOneItem,
       addItem, 
       updateItem, 
       deleteItem,
+
       getTodos,
       getOneTodo,
       addTodo, 
       updateTodo, 
       deleteTodo,
+
       getPersons,
       getOnePerson,
       addPerson, 
       updatePerson, 
       deletePerson,
+
       navigateToList, 
       navigateToForm 
     }}>

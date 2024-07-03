@@ -3,7 +3,7 @@ import CustomDropdown from '../../shared/CustomAutoComplete/CustomDropdown/Custo
 import styles from './ModalForm.module.scss';
 import { useContext, useState } from 'react';
 // import GlobalContext, {Tasks} from '../../../context/GlobalContext';
-import { Labels, Person, Priority, ToDo } from '../../../models';
+import { Labels, Person, Priority, Todo } from '../../../models';
 import dayjs from 'dayjs';
 
 
@@ -35,7 +35,7 @@ export default function ModalForm() {
   const [dueDate, setDueDate] = useState<any>(dayjs(startDate));
   const [labels, setLabels] = useState<Labels[]>([]);
   const [priority, setPriority] = useState<Priority>(Priority.LOW);
-  const [ savedTasks, setSavedTasks ] = useState<ToDo[]>([]);
+  const [ savedTasks, setSavedTasks ] = useState<Todo[]>([]);
 
   // let person;
 

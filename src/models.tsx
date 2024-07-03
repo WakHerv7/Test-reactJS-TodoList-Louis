@@ -1,14 +1,14 @@
 export enum Priority {
-    LOW = 'Facile',
-    MEDIUM = 'Moyen',
-    HIGH = 'Difficile',
+    'low',
+    'medium',
+    'high',
 }
 
 export enum Labels {
-    HTML = 'HTML',
-    CSS = 'CSS',
-    NODEJS = 'NodeJS',
-    JQUERY = 'JQuery',
+    'html',
+    'css',
+    'jquery',
+    'nodejs',
 }
 
 export type Person = {
@@ -18,7 +18,7 @@ export type Person = {
     phone: string;
 }
 
-export type ToDo = {
+export type Todo = {
     id: number,
     title: string,
     person: Person,
@@ -27,6 +27,5 @@ export type ToDo = {
     priority: Priority,
     labels: Labels[],
     description: string,
-    complited: boolean,
-    // dueDate: Date,
+    // completed: boolean,
 }

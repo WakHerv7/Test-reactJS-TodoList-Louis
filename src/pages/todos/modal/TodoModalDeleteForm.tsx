@@ -10,18 +10,18 @@ import { MdClose } from 'react-icons/md';
 import { faker } from '@faker-js/faker';
 
 
-export default function PersonModalDeleteForm() {
-  const { showPersonModal, updateStateShowPersonModal, deletePerson } = useContext(DataContext);
+export default function TodoModalDeleteForm() {
+  const { showTodoModal, updateStateShowTodoModal, deleteTodo } = useContext(DataContext);
 
 
 
   const handleClose = () => {
-    updateStateShowPersonModal({...showPersonModal, open:false, mode:''});
+    updateStateShowTodoModal({...showTodoModal, open:false, mode:''});
   }
 
-  const deletePersonData = (e: any) => {
+  const deleteTodoData = (e: any) => {
     e.preventDefault();    
-    deletePerson(showPersonModal.person.id);
+    deleteTodo(showTodoModal.todo.id);
     handleClose();
   }
 
@@ -42,11 +42,11 @@ export default function PersonModalDeleteForm() {
                     </svg>
                   </div>
                   <div className="mt-3 text-center">
-                    <h3 className="text-base font-semibold font-bold text-gray-900" id="modal-title">Supprimer une personne</h3>
+                    <h3 className="text-base font-semibold font-bold text-gray-900" id="modal-title">Supprimer une tache</h3>
                     <div className="my-3">
                       <p className="text-md text-gray-500 text-center">
                         Etes-vous sure de vouloir supprimer 
-                        <br/><strong className='text-md font-bold'>{showPersonModal.person.name}</strong>? 
+                        <br/><strong className='text-md font-bold'>{showTodoModal.todo.title}</strong>? 
                         <br/>Cette action est irreversible.
                       </p>
                     </div>
@@ -63,7 +63,7 @@ export default function PersonModalDeleteForm() {
                     </button>
                     <button 
                     type="submit" 
-                    onClick={deletePersonData}
+                    onClick={deleteTodoData}
                     className={`inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 
                     text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto`}>
                         Supprimer

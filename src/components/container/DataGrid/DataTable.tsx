@@ -2,13 +2,13 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Box from '@mui/material/Box';
 import styles from './DataTable.module.scss';
 // import { Tasks } from "../../../context/GlobalContext";
-import { ToDo } from "../../../models";
+import { Todo } from "../../../models";
 import dayjs from "dayjs";
 import { Avatar } from "@mui/material";
 import { stringAvatar } from "../../../utils";
 
 
-export default function DataTable({ data }: { data: ToDo[]}) {
+export default function DataTable({ data }: { data: Todo[]}) {
   const columns: GridColDef<(typeof data)[number]>[] = [
     {
       field: 'title',
