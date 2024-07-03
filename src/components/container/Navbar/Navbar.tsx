@@ -5,20 +5,12 @@ import { Link } from 'react-router-dom'
 export default function Navbar({title}:{title:string}) {
     const navLink = [
         {
-            link:'/persons',
-            label:'Person List',
-        },
-        {
             link:'/todos',
             label:'Todo List',
         },
         {
-            link:'/data',
-            label:'Item List',
-        },
-        {
-            link:'/add',
-            label:'Add New Item',
+            link:'/persons',
+            label:'Person List',
         },
     ];
   return (

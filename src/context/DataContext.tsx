@@ -1,16 +1,13 @@
-import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
-import {faker} from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
+import { createContext, useEffect, useState } from 'react';
 // import { setupMockHandlers } from '../mockHandler/dataMockHandler';
 import { setupMockHandlers } from '../mockHandler/todoMockHandler';
 // import { setupPersonMockHandlers } from '../mockHandler/personMockHandler';
-import { getMockItems, getOneMockItem, addMockItem, updateMockItem, deleteMockItem, saveMockItem } from '../api/item'; 
-import { getMockTodos, getOneMockTodo, addMockTodo, updateMockTodo, deleteMockTodo, saveMockTodo } from '../api/todo'; 
-import { getMockPersons, getOneMockPerson, addMockPerson, updateMockPerson, deleteMockPerson, saveMockPerson } from '../api/person'; 
+
 import { useNavigate } from 'react-router-dom';
-import { Labels, Person, Priority, Todo } from '../models';
-import dayjs from 'dayjs';
+import { addMockPerson, deleteMockPerson, getMockPersons, getOneMockPerson, saveMockPerson, updateMockPerson } from '../api/person';
+import { addMockTodo, deleteMockTodo, getMockTodos, getOneMockTodo, saveMockTodo, updateMockTodo } from '../api/todo';
+import { Person, Todo } from '../models';
 
 
 export type personModalProps = {
@@ -24,7 +21,6 @@ export type todoModalProps = {
   open: boolean
 }
 interface DataContextType {
-  data: any[];
   todos: Todo[];
   persons: Person[];
 
@@ -32,12 +28,6 @@ interface DataContextType {
   updateStateShowTodoModal: (showTodoModal:todoModalProps) => void;
   showPersonModal: personModalProps;
   updateStateShowPersonModal: (showPersonModal:personModalProps) => void;
-
-  getItems: () => Promise<any[]>;
-  getOneItem: (id: number | string) => Promise<any>;
-  addItem: (newItem: any) => Promise<void>;
-  updateItem: (id: number | string, updatedItem: any) => Promise<void>;
-  deleteItem: (id: number | string) => Promise<void>;
 
   getTodos: () => Promise<any[]>;
   getOneTodo: (id: number | string) => Promise<any>;
@@ -57,7 +47,6 @@ interface DataContextType {
 
 
 export const DataContext = createContext<DataContextType>({
-  data: [],
   todos: [],
   persons: [],
 
@@ -66,11 +55,6 @@ export const DataContext = createContext<DataContextType>({
   showPersonModal: {mode:'', person:{}, open:false},
   updateStateShowPersonModal: (param?: personModalProps) => null,
 
-  getItems: async () => [],
-  getOneItem: async (id: number | string) => {},
-  addItem: async (newItem: any) => {},
-  updateItem: async (id: number | string, updatedItem: any) => {},
-  deleteItem: async (id: number | string) => {},
 
   getTodos: async () => [],
   getOneTodo: async (id: number | string) => {},
@@ -89,19 +73,6 @@ export const DataContext = createContext<DataContextType>({
 });
 
 export const DataProvider = ({ children }:{children:any}) => {
-
-  // localStorage.clear();
-  // Items ----------------------------------
-  const mockData = Array.from({ length: 5 }, () => ({
-    id: faker.number.int(),
-    name: faker.person.firstName(),
-    email: faker.internet.email(),
-  }));
-  // localStorage.removeItem("customData");
-  const storedData = localStorage.getItem('customData');
-  const stateData = storedData? JSON.parse(storedData) : mockData;
-  saveMockItem(stateData);
-
 
   // Todos ----------------------------------
   // localStorage.removeItem("todos");
@@ -122,7 +93,6 @@ export const DataProvider = ({ children }:{children:any}) => {
   saveMockPerson(statePersons);
 
   // STATE --------------------------------------------------------------
-  const [customData, setCustomData] = useState<any>(stateData);
   const [todos, setTodos] = useState<any>(stateTodos ?? []);
   const [persons, setPersons] = useState<any>(statePersons);
 
@@ -152,47 +122,16 @@ export const DataProvider = ({ children }:{children:any}) => {
     };
   }, []);
 
-  /*********************** ITEMS ************************* */
-  const getItems = async () => {return getMockItems();}
-  const getOneItem = async (id:number | string) => {
-    return getOneMockItem(customData, id);
-  }
-  const addItem = async (newItem:any) => {
-    console.log("addItem");
-    const resdata = await addMockItem(customData, newItem);
-    if (resdata) setCustomData(resdata)
-  }
-  const updateItem = async (id:number | string, updatedItem:any) => {
-    console.log("updateItem");
-    const resdata = await updateMockItem(customData, id, updatedItem);
-    if (resdata) setCustomData(resdata)
-  }
-  const deleteItem = async (id:number | string) => {
-    const resdata = await deleteMockItem(customData, id);
-    if (resdata) setCustomData(resdata)
-  }
-
-
 /*********************** TODOS ************************* */
 const getTodos = async () => {return getMockTodos();}
 const getOneTodo = async (id:number | string) => {
   return getOneMockTodo(todos, id);
 }
 const addTodo = async (newTodo:any) => {
-  console.log("addTodo");
-  try {
-    const resdata = await addMockTodo(todos, newTodo);
-    console.log("Todo added : ", resdata);
-    if (resdata) setTodos(resdata)
-  } catch (error) {
-    console.log("addTodo ERROR : ", error);
-  }
-  // const resdata = await addMockTodo(todos, newTodo);
-  
- 
+  const resdata = await addMockTodo(todos, newTodo);
+  if (resdata) setTodos(resdata) 
 }
 const updateTodo = async (id:number | string, updatedTodo:any) => {
-  console.log("updateTodo");
   const resdata = await updateMockTodo(todos, id, updatedTodo);
   if (resdata) setTodos(resdata)
 }
@@ -210,11 +149,9 @@ const getOnePerson = async (id:number | string) => {
 const addPerson = async (newPerson:any) => {
   
   const resdata = await addMockPerson(persons, newPerson);
-  // console.log("addPerson", resdata);
   if (resdata) setPersons(resdata)
 }
 const updatePerson = async (id:number | string, updatedPerson:any) => {
-  console.log("updatePerson");
   const resdata = await updateMockPerson(persons, id, updatedPerson);
   if (resdata) setPersons(resdata)
 }
@@ -236,25 +173,17 @@ const deletePerson = async (id:number | string) => {
     navigate('/');
   };
   const navigateToForm = (id:any=null) => {
-    console.log("navigateToForm",id);
     id ? navigate(`/edit/${id}`) : navigate('/add');
   };
 
   return (
-    <DataContext.Provider value={{ 
-      data: customData,
+    <DataContext.Provider value={{
       todos,
       persons,
       showTodoModal,
       updateStateShowTodoModal,
       showPersonModal,
       updateStateShowPersonModal,
-
-      getItems,
-      getOneItem,
-      addItem, 
-      updateItem, 
-      deleteItem,
 
       getTodos,
       getOneTodo,

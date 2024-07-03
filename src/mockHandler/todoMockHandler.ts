@@ -17,7 +17,6 @@ export const setupMockHandlers = ({todos, stateTodos, persons, statePersons}: TP
     //============================== TODOS ==============================================
 
     mock.onGet('/api/todo').reply((req)=>{
-        console.log("onGet :  req.url : ", req.url);
         return[200, todos]
     });
 
@@ -37,9 +36,7 @@ export const setupMockHandlers = ({todos, stateTodos, persons, statePersons}: TP
     });
 
     mock.onPost('/api/todo').reply((req) => {
-        console.log("mock.onPost req.data : ", req.data);
-        const newItem = JSON.parse(req.data);
-        console.log("mock.onPost newItem : ", newItem);        
+        const newItem = JSON.parse(req.data);      
         return [200, newItem];
     });
     mock.onPut(/api\/todo\/?.*/).reply((req) => {
@@ -77,7 +74,6 @@ export const setupMockHandlers = ({todos, stateTodos, persons, statePersons}: TP
     //============================== PERSONS ==============================================
 
     mock.onGet('/api/person').reply((req)=>{
-        console.log("onGet :  req.url : ", req.url);
         return[200, persons]
     });
 
@@ -127,8 +123,6 @@ export const setupMockHandlers = ({todos, stateTodos, persons, statePersons}: TP
         
         
         if ( index != -1 ) {
-            console.log("mock.onDelete(/api/person)", index, id);
-            // statePersons.splice(index, 1);
             return [200, { message: 'Item deleted' }];
         } else {
             return [404, { error: 'Item not found' }];

@@ -9,7 +9,6 @@ export default function SidebarTodo() {
   
   const { showTodoModal, updateStateShowTodoModal } = useContext(DataContext);
   const openModal = () => {
-    // console.log("openModal");
     updateStateShowTodoModal({...showTodoModal, open:true, mode:'addForm'});
   }
   return (

@@ -8,7 +8,6 @@ export default function SidebarPerson() {
   
   const { showPersonModal, updateStateShowPersonModal } = useContext(DataContext);
   const openModal = () => {
-    // console.log("openModal");
     updateStateShowPersonModal({...showPersonModal, open:true, mode:'addForm'});
   }
   return (

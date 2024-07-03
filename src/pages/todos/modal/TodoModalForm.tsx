@@ -72,45 +72,31 @@ export default function TodoModalForm() {
   } = useForm<FormData>({
     resolver: zodResolver(todoSchema),
     defaultValues: {
-      title:"",
-      startDate: new Date(), 
-      endDate: new Date(),
-      person: {id:0, name:"", email:"", phone:""},
-      priority: "",
-      description: "",
+      title: showTodoModal.todo?.title ?? "",
+      startDate: showTodoModal.todo?.startDate ? new Date(showTodoModal.todo?.startDate) : new Date(), 
+      endDate: showTodoModal.todo?.endDate ? new Date(showTodoModal.todo?.endDate) : new Date(),
+      person: showTodoModal.todo?.person ?? {id:0, name:"", email:"", phone:""},
+      priority: showTodoModal.todo?.priority ?? "",
+      labels: showTodoModal.todo?.labels ?? [],
+      description: showTodoModal.todo?.description ?? "",
     },
   });
-
 
   const handleClose = () => {
     updateStateShowTodoModal({...showTodoModal, todo:{}, open:false, mode:''});
   }
 
-  const onSubmit = (data:FormData) => {
-    console.log("onSubmit : ", data);    
-    const newTodo = {...data, id: faker.number.int()}
-    addTodo(newTodo);
+  const onSubmit = (data:FormData) => { 
     
-      // if (showTodoModal.todo?.id && showTodoModal.mode==='editForm') {
-      //   const id = showTodoModal.todo?.id;
-      //   updateTodo(Number(id),{
-      //     id: id,
-      //     name: data.name,
-      //     email: data.email,
-      //     phone: data.phone,
-      //   });
-      // } else {
-      //   if (data.name && data.email && data.phone) {
-      //     const newTodo = {
-      //       id: faker.number.int(),
-      //       name: data.name,
-      //       email: data.email,
-      //       phone: data.phone,
-      //     };
-      //     addTodo(newTodo);
-      //   }
-      // }
-      // handleClose();
+    
+      if (showTodoModal.todo?.id && showTodoModal.mode==='editForm') {
+        const id = showTodoModal.todo?.id;
+        updateTodo(Number(id),{...data, id: id});
+      } else {
+        const newTodo = {...data, id: faker.number.int()}
+        addTodo(newTodo);
+      }
+      handleClose();
   }
 
   return (

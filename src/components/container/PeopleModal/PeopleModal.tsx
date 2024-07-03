@@ -14,7 +14,6 @@ export default function ModalForm() {
   
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('save')
   }
 
   return (
